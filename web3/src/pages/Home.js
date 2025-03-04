@@ -1,37 +1,34 @@
 // src/pages/Home.js
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import './Home.css';
+import {check_domain_availability}  from '../components/universal_function';  
 
 export default function Home() {
-  async function domain_test() {
-    const url = "";//test website
-    const data = {
+  const [domain, setDomain] = useState('');
+  const [message, setMessage] = useState('');
 
-    };
-
+  const handleCheckDomain = async () => {
     try {
-      const response = await fetch(url, {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',  
-        },
-        body: JSON.stringify(data), 
-      });
-
-      if (response.ok){
-        console.log("send success");
-      }else{
-        console.log('already send but failed:', response.statusText);
-      }
-    }catch(error){
-      console.log("send domain info failed:", error);
+      const result = await check_domain_availability(domain); 
+      setMessage(result); 
+    } catch (error) {
+      setMessage('error');
     }
-  }
+  };
 
+
+  //return HTML space
   return (
     <div className="home-container">
-      <button onClick={domain_test}>Send Message</button> 
+       <input 
+        type="text"
+        value={domain} 
+        onChange={(e) => setDomain(e.target.value)} 
+        placeholder="请输入 .sol 域名"
+        className="domain-input" 
+      />
+      <button onClick={handleCheckDomain}>Send Message</button>
     </div>
   );
 }
