@@ -1,19 +1,24 @@
 // src/pages/Home.js
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './Home.css';
-import {check_domain_availability}  from '../components/universal_function';  
+import {check_domain_availability}  from '../components/contract_function';  
 
 export default function Home() {
   const [domain, setDomain] = useState('');
-  const [message, setMessage] = useState('');
+  //get navigate hook
+  const navigate = useNavigate();
+  //set value to save buyerwallet
+  const [buyer_wallet, setWallet] = useState('');
 
   const handleCheckDomain = async () => {
     try {
       const result = await check_domain_availability(domain); 
-      setMessage(result); 
+      if(result !== ""){
+        navigate('./about', {state: {pda: result, domain: domain}})
+      }
     } catch (error) {
-      setMessage('error');
+      console.log("error:", error)
     }
   };
 
@@ -25,10 +30,10 @@ export default function Home() {
         type="text"
         value={domain} 
         onChange={(e) => setDomain(e.target.value)} 
-        placeholder="请输入 .sol 域名"
+        placeholder="input"
         className="domain-input" 
       />
-      <button onClick={handleCheckDomain}>Send Message</button>
+      <button onClick={handleCheckDomain}>Check Domain</button>
     </div>
   );
 }
